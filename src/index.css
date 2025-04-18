@@ -3,6 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #FF6719;
-  /* --secondary-color: #000; */
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #e6e6ff;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: "Montserrat", sans-serif;
+}
+
+.animatedButton{
+  animation-duration: 10000ms;
+}
+
+.ql-container{
+  border: none !important;
+}
+.ql-toolbar{
+  border: none !important;
+}
+.ql-editor{
+  border: none !important;
 }
