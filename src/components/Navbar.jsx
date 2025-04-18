@@ -2,6 +2,7 @@ import { useState } from "react";
 // import Image from "./Image";
 // import { Link } from "react-router-dom";
 // import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { IKImage } from 'imagekitio-react';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -9,6 +10,7 @@ const Navbar = () => {
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between">
       {/* LOGO */}
+      <IKImage urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT} path='/default-image.jpg' className='w-8 h-8' alt=''/>
       {/* <Link to="/" className="flex items-center gap-4 text-2xl font-bold"> */}
         {/* <Image src="logo.png" alt="Lama Logo" w={32} h={32} /> */}
         <span>Marlon Castro</span>
@@ -56,8 +58,12 @@ const Navbar = () => {
         </div>
       </div>
       {/* DESKTOP MENU */}
-      {/* <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-        <Link to="/">Home</Link>
+      <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
+        <a href="/">Home</a>
+        <a href="/">Home</a>
+        <a href="/">Home</a>
+        <a href="/">Home</a>
+        {/* <Link to="/">Home</Link>
         <Link to="/posts?sort=trending">Trending</Link>
         <Link to="/posts?sort=popular">Most Popular</Link>
         <Link to="/">About</Link>
@@ -70,8 +76,8 @@ const Navbar = () => {
         </SignedOut>
         <SignedIn>
           <UserButton />
-        </SignedIn>
-      </div> */}
+        </SignedIn> */}
+      </div>
     </div>
   );
 };
