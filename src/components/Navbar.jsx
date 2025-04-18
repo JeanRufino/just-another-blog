@@ -22,31 +22,23 @@ const Navbar = () => {
       </Link>
 
       {/* MOBILE MENU */}
-      <div className="md:hidden">
+      <div className="md:hidden z-10">
+
+        {/* MOBILE BUTTON */}
         <div
           className="cursor-pointer text-4xl"
           onClick={() => setOpenMenu((prev) => !prev)}
         >
           <div className="flex flex-col gap-[5.4px]">
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${openMenu && "rotate-45"
-                }`}
-            ></div>
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black transition-all ease-in-out ${openMenu && "opacity-0"
-                }`}
-            ></div>
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${openMenu && "-rotate-45"
-                }`}
-            ></div>
+            <div className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${openMenu && "rotate-45"}`} />
+            <div className={`h-[3px] rounded-md w-6 bg-black transition-all ease-in-out ${openMenu && "opacity-0"}`} />
+            <div className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${openMenu && "-rotate-45"}`} />
           </div>
         </div>
 
         {/* MOBILE LINK LIST */}
         <div
           className={`w-[100vw] h-screen bg-[#e6e6ff] flex flex-col items-center justify-center gap-8 font-medium text-lg fixed top-16 transition-all ease-in-out ${openMenu ? "-right-0" : "-right-[100%]"}`}
-
         >
           <Link to="/" onClick={() => setOpenMenu(false)}>Home</Link>
           <Link to="/posts?sort=trending" onClick={() => setOpenMenu(false)}>Trending</Link>
@@ -62,7 +54,6 @@ const Navbar = () => {
 
       {/* DESKTOP MENU */}
       <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-
         <Link to="/">Home</Link>
         <Link to="/posts?sort=trending">Trending</Link>
         <Link to="/posts?sort=popular">Most Popular</Link>
