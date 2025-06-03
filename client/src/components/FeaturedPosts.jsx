@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import Image from "./Image";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "timeago.js";
+// import { useQuery } from "@tanstack/react-query";
+// import { format } from "timeago.js";
 
 const fetchPost = async () => {
   const res = await axios.get(
@@ -12,10 +12,10 @@ const fetchPost = async () => {
 };
 
 const FeaturedPosts = () => {
-  const { isPending, error, data } = useQuery({
-    queryKey: ["featuredPosts"],
-    queryFn: () => fetchPost(),
-  });
+  // const { isPending, error, data } = useQuery({
+  //   queryKey: ["featuredPosts"],
+  //   queryFn: () => fetchPost(),
+  // });
 
   if (isPending) return "loading...";
   if (error) return "Something went wrong!" + error.message;
@@ -39,7 +39,7 @@ const FeaturedPosts = () => {
         <div className="flex items-center gap-4">
           <h1 className="font-semibold lg:text-lg">01.</h1>
           <Link className="text-blue-800 lg:text-lg">{posts[0].category}</Link>
-          <span className="text-gray-500">{format(posts[0].createdAt)}</span>
+          {/* <span className="text-gray-500">{format(posts[0].createdAt)}</span> */}
         </div>
         {/* TITLE */}
         <Link
