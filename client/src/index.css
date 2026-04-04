@@ -2,28 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  overflow-x: hidden;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body {
-  background-color: #e6e6ff;
-  width: 100vw;
-  max-width: 100vw;
-  overflow-x: hidden;
-  font-family: "Montserrat", sans-serif;
-}
-
-.animatedButton{
-  animation-duration: 10000ms;
-}
-
-.ql-container{
-  border: none !important;
-}
-.ql-toolbar{
-  border: none !important;
-}
-.ql-editor{
-  border: none !important;
+html, body, #root {
+  height: 100%;
 }
