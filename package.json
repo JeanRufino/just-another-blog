@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.101.1",
+    "@types/nodemailer": "^8.0.0",
+    "dotenv": "^17.4.1",
     "next": "^15.3.0",
+    "nodemailer": "^8.0.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
