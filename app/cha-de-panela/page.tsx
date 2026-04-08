@@ -506,7 +506,7 @@ export default function ChaDePanela() {
 
           {!usuario && (
             <form onSubmit={handleLogin} className="flex flex-col gap-3 max-w-sm">
-              <h2 className="font-semibold">🎁 Identificar-se</h2>
+              <h2 className="font-semibold">Identifique-se para escolher presentes! 🎁 </h2>
               <input
                 type="email"
                 placeholder="Seu e-mail"
