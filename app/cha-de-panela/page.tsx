@@ -608,7 +608,7 @@ export default function ChaDePanela() {
                       setModalLoginNome('')
                       setModalLoginEmail('')
                     }}
-                    className="border border-gray-300 rounded-lg overflow-hidden text-left transition-all duration-200 hover:-translate-y-1 hover:outline hover:outline-2 hover:outline-rose-200 cursor-pointer"
+                    className="border border-gray-300 rounded-lg overflow-hidden text-left transition-transform duration-200 hover:-translate-y-1 hover:ring-2 hover:ring-rose-200 cursor-pointer will-change-transform"
                   >
                     <div className="relative aspect-square bg-gray-100 overflow-hidden">
                       {ogImages[p.id] ? (
