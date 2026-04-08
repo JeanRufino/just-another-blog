@@ -42,6 +42,28 @@ export default function AdminChaDePanela() {
   const [editando, setEditando] = useState(false)
   const [feedback, setFeedback] = useState('')
   const [pagina, setPagina] = useState(1)
+  const [filtro, setFiltro] = useState('')
+  const [ordenacao, setOrdenacao] = useState<'preco-asc' | 'preco-desc' | ''>('')
+  const [mostrarReservados, setMostrarReservados] = useState(true)
+
+  const presentesFiltrados = filtro.trim()
+    ? presentes.filter((p) => p.nome.toLowerCase().includes(filtro.toLowerCase()))
+    : presentes
+
+  const presentesVisiveis = (() => {
+    let list = mostrarReservados ? presentesFiltrados : presentesFiltrados.filter((p) => !p.reservado)
+    if (ordenacao) {
+      list = [...list].sort((a, b) => {
+        const pa = a.preco ? parseFloat(a.preco.replace(',', '.')) : null
+        const pb = b.preco ? parseFloat(b.preco.replace(',', '.')) : null
+        if (pa === null && pb === null) return 0
+        if (pa === null) return 1
+        if (pb === null) return -1
+        return ordenacao === 'preco-asc' ? pa - pb : pb - pa
+      })
+    }
+    return list
+  })()
 
   useEffect(() => {
     fetchPresentes()
@@ -219,9 +241,9 @@ export default function AdminChaDePanela() {
         {/* Lista de presentes */}
         <section>
           {(() => {
-            const total = Math.ceil(presentes.length / POR_PAGINA)
+            const total = Math.ceil(presentesVisiveis.length / POR_PAGINA)
             const paginaAtual = Math.min(pagina, Math.max(1, total))
-            const slice = presentes.slice((paginaAtual - 1) * POR_PAGINA, paginaAtual * POR_PAGINA)
+            const slice = presentesVisiveis.slice((paginaAtual - 1) * POR_PAGINA, paginaAtual * POR_PAGINA)
 
             const inicio = Math.min(Math.max(1, paginaAtual - 2), Math.max(1, total - 4))
             const fim = Math.min(total, inicio + 4)
@@ -250,10 +272,34 @@ export default function AdminChaDePanela() {
               <>
                 <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
                   <h2 className="font-semibold">
-                    Presentes ({presentes.length})
+                    Presentes ({presentesVisiveis.length}{presentes.length !== presentesVisiveis.length ? ` de ${presentes.length}` : ''})
                     {total > 1 && <span className="text-gray-400 font-normal text-sm ml-2">— pág. {paginaAtual}/{total}</span>}
                   </h2>
-                  <Paginacao />
+                  <div className="flex items-center gap-2 flex-wrap w-full">
+                    <input
+                      type="text"
+                      placeholder="Filtrar por nome..."
+                      value={filtro}
+                      onChange={(e) => { setFiltro(e.target.value); setPagina(1) }}
+                      className="border rounded px-3 py-1 text-sm w-48"
+                    />
+                    {(['', 'preco-asc', 'preco-desc'] as const).map((o) => (
+                      <button
+                        key={o}
+                        onClick={() => { setOrdenacao(o); setPagina(1) }}
+                        className={`text-xs border rounded px-2 py-1 transition-all ${ordenacao === o ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-300 hover:border-gray-500'}`}
+                      >
+                        {o === '' ? 'Padrão' : o === 'preco-asc' ? '↑ Preço' : '↓ Preço'}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => { setMostrarReservados((v) => !v); setPagina(1) }}
+                      className={`text-xs border rounded px-2 py-1 transition-all ${!mostrarReservados ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-300 hover:border-gray-500'}`}
+                    >
+                      {mostrarReservados ? 'Ocultar escolhidos' : 'Ver escolhidos'}
+                    </button>
+                    <div className="ml-auto"><Paginacao /></div>
+                  </div>
                 </div>
                 {loading ? (
                   <p className="text-gray-400">Carregando...</p>
@@ -268,7 +314,7 @@ export default function AdminChaDePanela() {
                           <p className="font-medium text-sm">{p.nome}</p>
                           <p className="text-xs text-gray-400">
                             {p.loja ? `${p.loja} · ` : ''}
-                            {p.preco ?? '—'} ·{' '}
+                            {p.preco ?? 'Sem preço'} ·{' '}
                             <a
                               href={p.url}
                               target="_blank"
@@ -298,12 +344,14 @@ export default function AdminChaDePanela() {
                         </div>
                       </div>
                     ))}
-                    {presentes.length === 0 && (
-                      <p className="text-gray-400 text-sm">Nenhum presente cadastrado.</p>
+                    {presentesFiltrados.length === 0 && (
+                      <p className="text-gray-400 text-sm">
+                        {filtro ? `Nenhum presente encontrado para "${filtro}".` : 'Nenhum presente cadastrado.'}
+                      </p>
                     )}
                   </div>
                 )}
-                {total > 1 && <div className="mt-4"><Paginacao /></div>}
+                {total > 1 && <div className="mt-4 flex justify-end"><Paginacao /></div>}
               </>
             )
           })()}

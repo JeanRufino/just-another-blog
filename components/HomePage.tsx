@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import NavDots from './NavDots'
 
 function AboutSection() {
   const [result, setResult] = useState<string | null>(null)
@@ -40,13 +39,18 @@ function AboutSection() {
     </div>
   )
 }
+import NavDots from './NavDots'
+
 
 const sections = [
   {
     id: 'hero',
     content: (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full relative">
         <span className="text-white text-8xl font-bold select-none">&lt;/&gt;</span>
+        <p className="absolute bottom-8 right-8 text-white/30 text-sm text-right max-w-xs">
+          Desculpe, não tem nada aqui ainda, camarada!
+        </p>
       </div>
     ),
     bg: 'bg-gradient-to-b from-black to-[#021a0a]',
@@ -69,6 +73,8 @@ const sections = [
     bg: 'bg-gradient-to-b from-[#021a0a] to-black',
   },
 ]
+
+const VISIBLE_SECTIONS = 1
 
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -110,7 +116,7 @@ export default function HomePage() {
         className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth"
         style={{ scrollbarWidth: 'none' }}
       >
-        {sections.map((section, i) => (
+        {sections.slice(0, VISIBLE_SECTIONS).map((section, i) => (
           <section
             key={section.id}
             data-index={i}
@@ -121,7 +127,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      <NavDots total={sections.length} current={current} onDotClick={scrollTo} />
+      <NavDots total={VISIBLE_SECTIONS} current={current} onDotClick={scrollTo} />
     </>
   )
 }

@@ -25,19 +25,20 @@ function NavIcon({ active, children }: IconProps & { children: React.ReactNode }
       data-stroke-width={strokeWidth}
     >
       <defs>
-        <linearGradient id="wave" x1="-64" y1="-64" x2="0" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stopColor="#166534" />
-          <stop offset="35%"  stopColor="#166534" />
-          <stop offset="50%"  stopColor="#4ade80" />
-          <stop offset="58%"  stopColor="#dcfce7" />
-          <stop offset="65%"  stopColor="#4ade80" />
-          <stop offset="100%" stopColor="#166534" />
+        <linearGradient id="wave" x1="-128" y1="-128" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor="#22c55e" />
+          <stop offset="38%"  stopColor="#22c55e" />
+          <stop offset="46%"  stopColor="#86efac" />
+          <stop offset="50%"  stopColor="#f0fdf4" />
+          <stop offset="54%"  stopColor="#86efac" />
+          <stop offset="62%"  stopColor="#22c55e" />
+          <stop offset="100%" stopColor="#22c55e" />
           {active && (
             <>
-              <animate attributeName="x1" values="-64;64"  dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1" />
-              <animate attributeName="y1" values="-64;64"  dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1" />
-              <animate attributeName="x2" values="0;128"   dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1" />
-              <animate attributeName="y2" values="0;128"   dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1" />
+              <animate attributeName="x1" values="-128;-128;64"  keyTimes="0;0.72;1" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="y1" values="-128;-128;64"  keyTimes="0;0.72;1" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="x2" values="0;0;192"       keyTimes="0;0.72;1" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="y2" values="0;0;192"       keyTimes="0;0.72;1" dur="4s" repeatCount="indefinite" />
             </>
           )}
         </linearGradient>

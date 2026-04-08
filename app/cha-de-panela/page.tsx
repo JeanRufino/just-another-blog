@@ -25,7 +25,7 @@ type Presente = {
   reserva: Reserva
 }
 
-const ADMIN_EMAIL = 'beatryzsrabelo@gmail.com'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL
 
 export default function ChaDePanela() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
@@ -34,6 +34,23 @@ export default function ChaDePanela() {
   const [loadingPresentes, setLoadingPresentes] = useState(true)
   const [pagina, setPagina] = useState(1)
   const [porPagina, setPorPagina] = useState(20)
+  const [ordenacao, setOrdenacao] = useState<'preco-asc' | 'preco-desc' | ''>('')
+  const [mostrarReservados, setMostrarReservados] = useState(true)
+
+  const presentesFiltrados = (() => {
+    let list = mostrarReservados ? presentes : presentes.filter((p) => !p.reservado)
+    if (ordenacao) {
+      list = [...list].sort((a, b) => {
+        const pa = a.preco ? parseFloat(a.preco.replace(',', '.')) : null
+        const pb = b.preco ? parseFloat(b.preco.replace(',', '.')) : null
+        if (pa === null && pb === null) return 0
+        if (pa === null) return 1
+        if (pb === null) return -1
+        return ordenacao === 'preco-asc' ? pa - pb : pb - pa
+      })
+    }
+    return list
+  })()
 
   // Login form
   const [loginNome, setLoginNome] = useState('')
@@ -50,6 +67,9 @@ export default function ChaDePanela() {
   const [modalMsg, setModalMsg] = useState('')
 
   const modalPresente = presentes.find((p) => p.id === modalPresenteId) ?? null
+
+  // Meus presentes (dropdown header)
+  const [showMeusPresentes, setShowMeusPresentes] = useState(false)
 
   // Mensagem
   const [msgTexto, setMsgTexto] = useState('')
@@ -250,37 +270,113 @@ export default function ChaDePanela() {
   return (
     <div className="paper min-h-screen text-gray-800">
       {/* Header */}
-      <header className="flex items-center justify-end px-4 py-4 border-b gap-4">
-          {usuario ? (
-            <>
-              <span className="text-base text-gray-600 truncate min-w-0">{usuario.nome}</span>
-              <span className="text-gray-400">·</span>
-              <span className="text-base text-gray-600 truncate min-w-0">{usuario.email}</span>
-              {usuario.email === ADMIN_EMAIL && (
-                <>
-                  <span className="text-gray-400">·</span>
-                  <Link href="/cha-de-panela/admin" className="text-gray-600 hover:text-gray-900 shrink-0" title="Admin">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/gear.svg" alt="Admin" width={18} height={18} style={{ filter: 'brightness(0) saturate(100%) invert(40%)' }} />
-                  </Link>
-                </>
-              )}
-              <span className="text-gray-400">·</span>
-              <button onClick={handleLogout} className="text-base text-gray-600 hover:text-gray-900 shrink-0">
-                Sair
-              </button>
-            </>
-          ) : (
-            <span className="text-base text-gray-400">Não identificado</span>
-          )}
+      <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-end px-4 py-3 border-b gap-3 bg-[#fef7f8]">
+        {usuario ? (
+          <>
+            <span className="text-sm text-gray-600 truncate min-w-0 hidden sm:inline">{usuario.nome}</span>
+            <span className="text-gray-400 hidden sm:inline">·</span>
+
+            {/* Meus presentes */}
+            {(() => {
+              const meusPresentes = presentes.filter(
+                (p) => p.reserva?.reservado_por?.email === usuario.email
+              )
+              return (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowMeusPresentes((v) => !v)}
+                    className="text-sm text-gray-600 hover:text-gray-900 shrink-0"
+                  >
+                    Meus presentes{meusPresentes.length > 0 ? ` (${meusPresentes.length})` : ''}
+                  </button>
+                  {showMeusPresentes && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowMeusPresentes(false)}
+                      />
+                      <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-72 max-h-80 overflow-y-auto z-50">
+                        <div className="p-3 space-y-2">
+                          {meusPresentes.length === 0 ? (
+                            <p className="text-sm text-gray-400 italic">Você não selecionou nenhum presente ainda.</p>
+                          ) : meusPresentes.map((p) => (
+                            <div key={p.id} className="flex items-start justify-between gap-2">
+                              <span className="text-sm text-gray-700 line-clamp-2 flex-1">{p.nome}</span>
+                              <button
+                                onClick={() => {
+                                  setModalPresenteId(p.id)
+                                  setModalMsg('')
+                                  setModalLoginNome('')
+                                  setModalLoginEmail('')
+                                  setShowMeusPresentes(false)
+                                }}
+                                className="text-xs text-gray-400 hover:text-gray-700 shrink-0 mt-0.5"
+                              >
+                                ver
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )
+            })()}
+
+            {usuario.email === ADMIN_EMAIL && (
+              <>
+                <span className="text-gray-400">·</span>
+                <Link href="/cha-de-panela/admin" className="text-gray-600 hover:text-gray-900 shrink-0" title="Admin">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/gear.svg" alt="Admin" width={18} height={18} style={{ filter: 'brightness(0) saturate(100%) invert(40%)' }} />
+                </Link>
+              </>
+            )}
+            <span className="text-gray-400">·</span>
+            <button onClick={handleLogout} className="text-sm text-gray-600 hover:text-gray-900 shrink-0">
+              Sair
+            </button>
+          </>
+        ) : (
+          <form onSubmit={handleLogin} className="flex items-center gap-2 flex-wrap justify-end">
+            <input
+              type="email"
+              placeholder="Seu e-mail"
+              value={loginEmail}
+              onChange={(e) => { setLoginEmail(e.target.value); setLoginNovo(false) }}
+              required
+              className="border rounded px-2 py-1 text-sm w-44"
+            />
+            {loginNovo && (
+              <input
+                type="text"
+                placeholder="Seu nome"
+                value={loginNome}
+                onChange={(e) => setLoginNome(e.target.value)}
+                required
+                autoFocus
+                className="border rounded px-2 py-1 text-sm w-36"
+              />
+            )}
+            {loginError && <p className="text-red-500 text-xs">{loginError}</p>}
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="text-sm bg-gray-800 text-white rounded px-3 py-1 disabled:opacity-50 shrink-0"
+            >
+              {loginLoading ? '...' : loginNovo ? 'Confirmar' : 'Entrar'}
+            </button>
+          </form>
+        )}
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-12">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-8 space-y-8 max-[525px]:pt-14 min-[526px]:max-[1023px]:pt-16 lg:pt-20">
         {/* Seção de topo */}
         <section className="space-y-6">
           <div>
             {/* Alianças */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center max-[525px]:mb-0 min-[526px]:max-[1023px]:mb-1 lg:mb-6 max-[525px]:scale-[0.65] min-[526px]:max-[1023px]:scale-[0.82] lg:scale-100 origin-center">
               <svg width="180" height="125" viewBox="0 0 180 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <clipPath id="ring-a-top">
@@ -340,17 +436,44 @@ export default function ChaDePanela() {
               <p className="text-gray-600 mt-1">Nossa história é feita de amor, tempero e comida boa e você faz parte dessa cozinha! &lt;3</p>
             </div>
 
-            {/* Fotos + coração */}
-            <div className="relative flex items-center justify-center mb-4">
-              {/* Fotos Jean — esquerda */}
-              <div className="absolute -left-4 -top-10 z-10 rotate-[-6deg]" style={{ width: 144, height: 192 }}>
+            {/* Fotos + coração — mobile/tablet */}
+            <div className="flex lg:hidden items-center justify-center mb-4 gap-3 min-[526px]:gap-6">
+              {/* Fotos Jean */}
+              <div className="relative shrink-0 rotate-[-6deg] z-10 w-[88px] h-[118px] min-[526px]:w-[116px] min-[526px]:h-[154px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/alfredo_jean.webp" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean.JPG" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
               </div>
-              {/* Fotos Bia — direita */}
-              <div className="absolute -right-4 -top-10 z-10 rotate-[6deg]" style={{ width: 144, height: 192 }}>
+              {/* Coração — escalado via wrapper */}
+              <div className="relative flex items-center justify-center shrink-0 scale-[0.65] min-[526px]:scale-[0.82] origin-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/hearts-cloud.svg" alt="" width={280} height={200} className="absolute pointer-events-none" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'rotate(-60deg)', marginRight: '-44px', marginTop: '80px' }} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/heart.svg" alt="" width={128} height={128} className="relative" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'scaleX(-1) rotate(-60deg)', marginLeft: '-44px', marginTop: '80px' }} />
+              </div>
+              {/* Fotos Bia */}
+              <div className="relative shrink-0 rotate-[6deg] z-10 w-[88px] h-[118px] min-[526px]:w-[116px] min-[526px]:h-[154px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia.jpeg" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/colette_bia.webp" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+              </div>
+            </div>
+
+            {/* Fotos + coração — desktop (layout original) */}
+            <div className="hidden lg:flex relative items-center justify-center mb-4">
+              <div className="absolute left-2 -top-10 z-10 rotate-[-6deg]" style={{ width: 144, height: 192 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/alfredo_jean.webp" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean.JPG" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+              </div>
+              <div className="absolute right-2 -top-10 z-10 rotate-[6deg]" style={{ width: 144, height: 192 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia.jpeg" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -382,7 +505,7 @@ export default function ChaDePanela() {
 
           {!usuario && (
             <form onSubmit={handleLogin} className="flex flex-col gap-3 max-w-sm">
-              <h2 className="font-semibold">Identificar-se</h2>
+              <h2 className="font-semibold">🎁 Identificar-se</h2>
               <input
                 type="email"
                 placeholder="Seu e-mail"
@@ -416,24 +539,50 @@ export default function ChaDePanela() {
 
         {/* Grade de presentes */}
         <section className="relative">
-          <div className="absolute inset-0 pointer-events-none z-0" style={{ backgroundImage: 'url(/hearts-cloud-2.svg)', backgroundSize: '380px 210px', backgroundRepeat: 'repeat', opacity: 0.18 }} />
-          <h2 className="text-xl font-semibold mb-4 relative z-10">Lista de Presentes</h2>
+          <div className="relative z-10 flex items-center justify-between mb-4 gap-3 flex-wrap">
+            <h2 className="text-xl font-semibold">Lista de Presentes</h2>
+            <div className="flex items-center gap-2 flex-wrap w-full">
+              {(['', 'preco-asc', 'preco-desc'] as const).map((o) => (
+                <button
+                  key={o}
+                  onClick={() => { setOrdenacao(o); setPagina(1) }}
+                  className={`text-xs border rounded px-2 py-1 transition-all duration-200 ${ordenacao === o ? 'bg-gray-700 text-white border-gray-700' : 'bg-white/90 border-gray-300 hover:border-gray-500'}`}
+                >
+                  {o === '' ? 'Padrão' : o === 'preco-asc' ? '↑ Preço' : '↓ Preço'}
+                </button>
+              ))}
+              <button
+                onClick={() => { setMostrarReservados((v) => !v); setPagina(1) }}
+                className={`text-xs border rounded px-2 py-1 transition-all duration-200 ${!mostrarReservados ? 'bg-gray-700 text-white border-gray-700' : 'bg-white/90 border-gray-300 hover:border-gray-500'}`}
+              >
+                {mostrarReservados ? 'Ocultar escolhidos' : 'Ver escolhidos'}
+              </button>
+            </div>
+          </div>
           {loadingPresentes ? (
             <p className="text-gray-400 relative z-10">Carregando...</p>
           ) : (
             <div className="relative z-10 space-y-6">
               {/* Controles de paginação — topo */}
               {(() => {
-                const total = Math.ceil(presentes.length / porPagina)
+                const total = Math.ceil(presentesFiltrados.length / porPagina)
                 const inicio = Math.min(Math.max(1, pagina - 2), Math.max(1, total - 4))
                 const fim = Math.min(total, inicio + 4)
                 const paginas = Array.from({ length: fim - inicio + 1 }, (_, i) => inicio + i)
-                const btnBase = 'px-3 py-1.5 text-sm border rounded transition-all duration-300'
+                const btnBase = 'px-2 py-1 text-xs border rounded transition-all duration-300 bg-white/90'
                 const btnInativo = `${btnBase} border-gray-300 hover:border-gray-500`
                 const btnAtivo = `${btnBase} page-active`
                 const btnDisabled = `${btnBase} border-gray-200 opacity-30 cursor-not-allowed`
                 return (
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span className="shrink-0">Itens por página:</span>
+                      <div className="flex gap-1">
+                        {[10, 20, 40, 100].map((n) => (
+                          <button key={n} onClick={() => { setPorPagina(n); setPagina(1) }} className={n === porPagina ? btnAtivo : btnInativo}>{n}</button>
+                        ))}
+                      </div>
+                    </div>
                     <div className="flex items-center gap-1 flex-wrap">
                       <button onClick={() => setPagina(1)} disabled={pagina === 1} className={pagina === 1 ? btnDisabled : btnInativo}>&laquo;</button>
                       <button onClick={() => setPagina((p) => Math.max(1, p - 1))} disabled={pagina === 1} className={pagina === 1 ? btnDisabled : btnInativo}>&lsaquo;</button>
@@ -443,20 +592,12 @@ export default function ChaDePanela() {
                       <button onClick={() => setPagina((p) => Math.min(total, p + 1))} disabled={pagina === total} className={pagina === total ? btnDisabled : btnInativo}>&rsaquo;</button>
                       <button onClick={() => setPagina(total)} disabled={pagina === total} className={pagina === total ? btnDisabled : btnInativo}>&raquo;</button>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="shrink-0">Por página:</span>
-                      <div className="flex gap-1">
-                        {[10, 20, 40, 100].map((n) => (
-                          <button key={n} onClick={() => { setPorPagina(n); setPagina(1) }} className={n === porPagina ? btnAtivo : btnInativo}>{n}</button>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 )
               })()}
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {presentes.slice((pagina - 1) * porPagina, pagina * porPagina).map((p) => (
+                {presentesFiltrados.slice((pagina - 1) * porPagina, pagina * porPagina).map((p) => (
                   <button
                     key={p.id}
                     onClick={() => {
@@ -465,19 +606,19 @@ export default function ChaDePanela() {
                       setModalLoginNome('')
                       setModalLoginEmail('')
                     }}
-                    className="border border-gray-300 rounded-lg overflow-hidden text-left transition-all duration-200 hover:shadow-md hover:border-gray-500 hover:-translate-y-0.5 cursor-pointer"
+                    className="border border-gray-300 rounded-lg overflow-hidden text-left transition-all duration-200 hover:-translate-y-1 hover:outline hover:outline-2 hover:outline-rose-200 cursor-pointer"
                   >
-                    <div className="relative aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div className="relative aspect-square bg-gray-100 overflow-hidden">
                       {ogImages[p.id] ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={ogImages[p.id]}
                           alt={p.nome}
                           loading="lazy"
-                          className="w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-4xl">🎁</span>
+                        <span className="absolute inset-0 flex items-center justify-center text-4xl">🎁</span>
                       )}
                       {p.reservado ? (
                         <span className="absolute top-2 right-2 text-xs font-medium bg-red-100 text-red-600 rounded px-2 py-0.5">
@@ -490,11 +631,9 @@ export default function ChaDePanela() {
                       )}
                     </div>
                     <div className="p-3 bg-gray-50">
-                      <p className="text-sm font-medium line-clamp-2">{p.nome}</p>
-                      {p.loja && <p className="text-xs text-gray-400 mt-1">{p.loja}</p>}
-                      {p.preco && (
-                        <p className="text-xs text-gray-700 mt-1">{p.preco}</p>
-                      )}
+                      <p className="text-sm font-medium line-clamp-2 h-10">{p.nome}</p>
+                      <p className="text-xs text-gray-400 mt-1">{p.loja ?? '\u00a0'}</p>
+                      <p className="text-xs text-gray-700 mt-1">{p.preco ? `R$ ${p.preco}` : 'Sem preço'}</p>
                     </div>
                   </button>
                 ))}
@@ -514,7 +653,7 @@ export default function ChaDePanela() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/qrcode-pix.png" alt="QR Code Pix" width={160} height={160} className="rounded-lg border border-gray-200 shrink-0" />
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">Se não achou o presente ideal ou não vai poder ir no dia ou por qualquer outro motivo você quer nos presentear com um PIX <s>pra eu comprar meu monitor curvo de 49&quot;</s> <s>pra eu comprar minha batedeira KitchenAid</s> pra gente comprar comida pros nossos salsichas, use o QR code ao lado ou o código abaixo!</p>
+              <p className="text-sm text-gray-500">Se não achou o presente ideal ou não vai poder ir no dia ou por qualquer outro motivo você quer nos presentear com um PIX <s>pra eu comprar meu monitor curvo de 49&quot;</s> <s>pra eu comprar minha batedeira KitchenAid</s> pra gente comprar comida pros nossos salsichas, use o QR code <span className="max-[639px]:hidden">ao lado</span><span className="min-[640px]:hidden">acima</span> ou o código abaixo!</p>
               <div>
                 <p className="text-xs text-gray-400 mb-1">Pix copia e cola</p>
                 <div className="flex items-center gap-2">
@@ -537,9 +676,11 @@ export default function ChaDePanela() {
         <hr className="border-gray-300" />
 
         {/* Seção — Mensagem */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold">Deixe uma mensagem de carinho!</h2>
-          <form onSubmit={handleMensagem} className="flex flex-col gap-3 max-w-lg">
+        <section className="relative space-y-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/hearts-cloud.svg" alt="" width={280} height={200} className="absolute inset-0 w-full h-full object-contain pointer-events-none z-0" style={{ opacity: 0.22 }} />
+          <h2 className="text-xl font-semibold relative z-10">Deixe uma mensagem de carinho!</h2>
+          <form onSubmit={handleMensagem} className="flex flex-col gap-3 max-w-lg relative z-10">
               {!usuario && (
                 <>
                   <input
@@ -603,7 +744,7 @@ export default function ChaDePanela() {
           }}
         >
           <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-4">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start pb-4">
               <h3 className="font-semibold text-lg">{modalPresente.nome}</h3>
               <button
                 onClick={() => setModalPresenteId(null)}
@@ -629,7 +770,7 @@ export default function ChaDePanela() {
             )}
 
             {modalPresente.preco && (
-              <p className="text-base font-semibold">{modalPresente.preco}</p>
+              <p className="text-base font-semibold">R$ {modalPresente.preco}</p>
             )}
 
             <a
