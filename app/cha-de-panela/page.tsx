@@ -25,7 +25,7 @@ type Presente = {
   reserva: Reserva
 }
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL
 
 export default function ChaDePanela() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
