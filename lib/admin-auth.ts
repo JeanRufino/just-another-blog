@@ -23,8 +23,11 @@ function bufToB64(buf: ArrayBuffer): string {
   return btoa(String.fromCharCode(...new Uint8Array(buf)))
 }
 
-function b64ToBuf(b64: string): Uint8Array {
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))
+function b64ToBuf(b64: string): Uint8Array<ArrayBuffer> {
+  const binary = atob(b64)
+  const buf = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i)
+  return buf
 }
 
 export async function signSession(email: string): Promise<string> {
