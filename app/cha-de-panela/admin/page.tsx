@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 type Presente = {
   id: string
   nome: string
+  descricao: string | null
   loja: string | null
   url: string
   imagem_url: string | null
@@ -16,13 +17,14 @@ type Presente = {
 type Form = {
   id?: string
   nome: string
+  descricao: string
   loja: string
   url: string
   imagem_url: string
   preco: string
 }
 
-const FORM_VAZIO: Form = { nome: '', loja: '', url: '', imagem_url: '', preco: '' }
+const FORM_VAZIO: Form = { nome: '', descricao: '', loja: '', url: '', imagem_url: '', preco: '' }
 const POR_PAGINA = 20
 
 function formatPreco(digits: string): string {
@@ -87,8 +89,8 @@ export default function AdminChaDePanela() {
 
     const method = editando ? 'PUT' : 'POST'
     const body = editando
-      ? { id: form.id, nome: form.nome, loja: form.loja || null, url: form.url, imagem_url: form.imagem_url || null, preco: form.preco || null }
-      : { nome: form.nome, loja: form.loja || null, url: form.url, imagem_url: form.imagem_url || null, preco: form.preco || null }
+      ? { id: form.id, nome: form.nome, descricao: form.descricao || null, loja: form.loja || null, url: form.url, imagem_url: form.imagem_url || null, preco: form.preco || null }
+      : { nome: form.nome, descricao: form.descricao || null, loja: form.loja || null, url: form.url, imagem_url: form.imagem_url || null, preco: form.preco || null }
 
     const res = await fetch('/api/cha-de-panela/admin/presentes', {
       method,
@@ -126,9 +128,11 @@ export default function AdminChaDePanela() {
 
   function handleEditar(p: Presente) {
     setPagina(1)
+    document.getElementById('form-presente')?.scrollIntoView({ behavior: 'smooth' })
     setForm({
       id: p.id,
       nome: p.nome,
+      descricao: p.descricao ?? '',
       loja: p.loja ?? '',
       url: p.url,
       imagem_url: p.imagem_url ?? '',
@@ -169,7 +173,7 @@ export default function AdminChaDePanela() {
       <main className="max-w-4xl mx-auto px-6 py-10 space-y-10">
         {/* Formulário de adicionar/editar */}
         <section>
-          <h2 className="font-semibold mb-4">{editando ? 'Editar Presente' : 'Adicionar Presente'}</h2>
+          <h2 id="form-presente" className="font-semibold mb-4">{editando ? 'Editar Presente' : 'Adicionar Presente'}</h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <input
               type="text"
@@ -185,6 +189,13 @@ export default function AdminChaDePanela() {
               value={form.loja}
               onChange={(e) => setForm({ ...form, loja: e.target.value })}
               className="border rounded px-3 py-2 text-sm"
+            />
+            <textarea
+              placeholder="Descrição (opcional)"
+              value={form.descricao}
+              onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+              rows={2}
+              className="border rounded px-3 py-2 text-sm md:col-span-2 resize-none"
             />
             <input
               type="url"
@@ -312,9 +323,12 @@ export default function AdminChaDePanela() {
                       >
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm">{p.nome}</p>
+                          {p.descricao && (
+                            <p className="text-xs text-gray-500 mt-0.5 truncate max-w-sm">{p.descricao}</p>
+                          )}
                           <p className="text-xs text-gray-400">
                             {p.loja ? `${p.loja} · ` : ''}
-                            {p.preco ?? 'Sem preço'} ·{' '}
+                            {p.preco ? `R$ ${p.preco}` : 'Sem preço'} ·{' '}
                             <a
                               href={p.url}
                               target="_blank"

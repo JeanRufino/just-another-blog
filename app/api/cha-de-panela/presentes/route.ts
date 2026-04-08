@@ -26,6 +26,7 @@ export async function GET() {
     return {
       id: p.id,
       nome: p.nome,
+      descricao: p.descricao,
       loja: p.loja,
       url: p.url,
       imagem_url: p.imagem_url,

@@ -17,6 +17,7 @@ type Reserva = {
 type Presente = {
   id: string
   nome: string
+  descricao: string | null
   loja: string | null
   url: string
   imagem_url: string | null
@@ -768,6 +769,10 @@ export default function ChaDePanela() {
                   className="w-full h-72 object-cover rounded-lg cursor-pointer"
                 />
               </a>
+            )}
+
+            {modalPresente.descricao && (
+              <p className="text-sm text-gray-600 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">{modalPresente.descricao}</p>
             )}
 
             {modalPresente.loja && (
