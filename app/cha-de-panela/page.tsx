@@ -279,6 +279,61 @@ export default function ChaDePanela() {
         {/* Seção de topo */}
         <section className="space-y-6">
           <div>
+            {/* Alianças */}
+            <div className="flex justify-center mb-6">
+              <svg width="180" height="125" viewBox="0 0 180 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="ring-a-top">
+                    <rect x="0" y="0" width="180" height="63"/>
+                  </clipPath>
+                  {/* Máscara: só o filete claro central de cada anel */}
+                  <mask id="rings-mask">
+                    <circle cx="65" cy="62" r="40" fill="none" stroke="white" strokeWidth="5"/>
+                    <circle cx="115" cy="62" r="40" fill="none" stroke="white" strokeWidth="5"/>
+                  </mask>
+                  {/* Gradiente do brilho */}
+                  <linearGradient id="rings-shimmer" x1="0" y1="0" x2="1" y2="0.25">
+                    <stop offset="0%"   stopColor="white" stopOpacity="0"/>
+                    <stop offset="38%"  stopColor="white" stopOpacity="0"/>
+                    <stop offset="46%"  stopColor="#fffce0" stopOpacity="0.55"/>
+                    <stop offset="50%"  stopColor="white"  stopOpacity="0.92"/>
+                    <stop offset="54%"  stopColor="#fffce0" stopOpacity="0.55"/>
+                    <stop offset="62%"  stopColor="white" stopOpacity="0"/>
+                    <stop offset="100%" stopColor="white" stopOpacity="0"/>
+                  </linearGradient>
+                </defs>
+
+                {/* Ring A back */}
+                <circle cx="65" cy="62" r="40" fill="none" stroke="#5A3B00" strokeWidth="18"/>
+                <circle cx="65" cy="62" r="40" fill="none" stroke="#C9960C" strokeWidth="12"/>
+                <circle cx="65" cy="62" r="40" fill="none" stroke="#F5D878" strokeWidth="4"/>
+                {/* Ring B full */}
+                <circle cx="115" cy="62" r="40" fill="none" stroke="#5A3B00" strokeWidth="18"/>
+                <circle cx="115" cy="62" r="40" fill="none" stroke="#C9960C" strokeWidth="12"/>
+                <circle cx="115" cy="62" r="40" fill="none" stroke="#F5D878" strokeWidth="4"/>
+                {/* Ring A top arc (frente no cruzamento) */}
+                <g clipPath="url(#ring-a-top)">
+                  <circle cx="65" cy="62" r="40" fill="none" stroke="#5A3B00" strokeWidth="18"/>
+                  <circle cx="65" cy="62" r="40" fill="none" stroke="#C9960C" strokeWidth="12"/>
+                  <circle cx="65" cy="62" r="40" fill="none" stroke="#F5D878" strokeWidth="4"/>
+                </g>
+
+                {/* Brilho: varre da direita para a esquerda, mascarado aos traços */}
+                <g mask="url(#rings-mask)">
+                  <rect x="0" y="0" width="180" height="125" fill="url(#rings-shimmer)">
+                    <animateTransform
+                      attributeName="transform"
+                      type="translate"
+                      values="180 0;180 0;-180 0"
+                      keyTimes="0;0.72;1"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                </g>
+              </svg>
+            </div>
+
             {/* Texto acima */}
             <div className="mb-4 text-center">
               <p className="text-lg font-semibold">Oie! Bem-vindos à nossa lista de Chá de Panela \o/</p>

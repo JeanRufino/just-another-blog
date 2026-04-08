@@ -62,15 +62,19 @@ components/
 | DNS          | Hostinger                                               |
 | E-mail       | Hostinger (contato@jeanrufino.com)                      |
 | E-mail send  | Nodemailer with Gmail                                   |
-| Admin auth   | httpOnly cookie signed with HMAC-SHA256 (`ADMIN_SECRET`), credentials hardcoded via env (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) |
+| Admin auth   | httpOnly cookie signed with HMAC-SHA256 (`ADMIN_SECRET`), credentials via env (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) |
 
-### Admin area (`/admin`)
+### Admin area (`/cha-de-panela/admin`)
 
-- `middleware.ts` — protects all `/admin/*` and `/api/admin/*` routes; redirects to `/admin/login` if cookie missing or invalid
+Scoped exclusively to the chá de panela feature — there is no top-level `/admin` route.
+
+- `middleware.ts` — protects `/cha-de-panela/admin/*` and `/api/cha-de-panela/admin/*`; redirects to `/cha-de-panela/admin/login` if cookie missing or invalid
 - `lib/admin-auth.ts` — `signSession` / `verifySession` using Web Crypto API (edge-compatible)
-- `app/api/admin/login/route.ts` — POST, validates credentials, sets httpOnly cookie
-- `app/api/admin/logout/route.ts` — POST, clears cookie
-- `app/api/admin/presentes/route.ts` — protected GET/POST/PUT/DELETE for gift list management
+- `app/cha-de-panela/admin/login/page.tsx` — password-only form (email is fixed via env; no email field shown)
+- `app/api/cha-de-panela/admin/login/route.ts` — POST, validates password against `ADMIN_PASSWORD`, sets httpOnly cookie
+- `app/api/cha-de-panela/admin/logout/route.ts` — POST, clears cookie
+- `app/api/cha-de-panela/admin/presentes/route.ts` — protected GET/POST/PUT/DELETE for gift list management
+- `app/cha-de-panela/admin/page.tsx` — CRUD dashboard; preco field uses bank-style input mask (digits only, auto-decimal)
 
 ## Notes
 
