@@ -77,6 +77,7 @@ export default function ChaDePanela() {
   const [msgEmail, setMsgEmail] = useState('')
   const [msgLoading, setMsgLoading] = useState(false)
   const [msgFeedback, setMsgFeedback] = useState('')
+  const [pixCopiado, setPixCopiado] = useState(false)
 
   // Carrega usuário do localStorage
   useEffect(() => {
@@ -662,10 +663,14 @@ export default function ChaDePanela() {
                   </code>
                   <button
                     type="button"
-                    onClick={() => navigator.clipboard.writeText('00020126330014BR.GOV.BCB.PIX0111130801977715204000053039865802BR5901N6001C62160512PGTCHAPANELA630469D8')}
-                    className="shrink-0 text-xs border border-gray-300 rounded px-2 py-1.5 hover:border-gray-500 transition-all"
+                    onClick={() => {
+                      navigator.clipboard.writeText('00020126330014BR.GOV.BCB.PIX0111130801977715204000053039865802BR5901N6001C62160512PGTCHAPANELA630469D8')
+                      setPixCopiado(true)
+                      setTimeout(() => setPixCopiado(false), 2000)
+                    }}
+                    className={`shrink-0 text-xs border rounded px-2 py-1.5 transition-all duration-300 ${pixCopiado ? 'border-green-400 text-green-600' : 'border-gray-300 hover:border-gray-500'}`}
                   >
-                    Copiar
+                    {pixCopiado ? '✓ Copiado!' : 'Copiar'}
                   </button>
                 </div>
               </div>
