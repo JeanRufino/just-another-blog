@@ -1,0 +1,18 @@
+<svg width="70" height="100" viewBox="0 0 70 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M 48,88 C 48,62 12,44 16,28 C 20,13 36,9 44,17 C 51,25 47,36 41,38 C 35,40 30,35 32,30"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="5"
+  >
+    <animate attributeName="stroke" values="#7a0a0a;#b01a20;#7a0a0a" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path
+    d="M 48,88 C 48,62 12,44 16,28 C 20,13 36,9 44,17 C 51,25 47,36 41,38 C 35,40 30,35 32,30"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2.5"
+  >
+    <animate attributeName="stroke" values="#e0373e;#ff6b78;#e0373e" dur="2s" begin="0.2s" repeatCount="indefinite"/>
+  </path>
+</svg>

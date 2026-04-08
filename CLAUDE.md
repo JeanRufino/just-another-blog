@@ -52,6 +52,26 @@ components/
 | 1     | about | About — placeholder |
 | 2     | blog  | SCREAMING_SNAKE_CASE blog — placeholder |
 
+## Infrastructure
+
+| Layer        | Technology                                              |
+|--------------|---------------------------------------------------------|
+| Framework    | Next.js 15 (App Router)                                 |
+| Hosting      | Vercel                                                  |
+| Database     | Supabase (PostgreSQL)                                   |
+| DNS          | Hostinger                                               |
+| E-mail       | Hostinger (contato@jeanrufino.com)                      |
+| E-mail send  | Nodemailer with Gmail                                   |
+| Admin auth   | httpOnly cookie signed with HMAC-SHA256 (`ADMIN_SECRET`), credentials hardcoded via env (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) |
+
+### Admin area (`/admin`)
+
+- `middleware.ts` — protects all `/admin/*` and `/api/admin/*` routes; redirects to `/admin/login` if cookie missing or invalid
+- `lib/admin-auth.ts` — `signSession` / `verifySession` using Web Crypto API (edge-compatible)
+- `app/api/admin/login/route.ts` — POST, validates credentials, sets httpOnly cookie
+- `app/api/admin/logout/route.ts` — POST, clears cookie
+- `app/api/admin/presentes/route.ts` — protected GET/POST/PUT/DELETE for gift list management
+
 ## Notes
 
 - `base-estrutura-projeto.md` and `base-nomenclatura.md` are Jean's personal baseline docs — consult them for structural and naming decisions

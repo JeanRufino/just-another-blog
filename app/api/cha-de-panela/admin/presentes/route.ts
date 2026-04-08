@@ -1,50 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+// Middleware já garante autenticação para /api/cha-de-panela/admin/* antes de chegar aqui
+
 // GET — lista todos os presentes com info de reserva
 export async function GET() {
   const { data, error } = await supabase
     .from('presentes')
-    .select(`
-      *,
-      reservas (
-        id,
-        usuarios (
-          nome,
-          email
-        )
-      )
-    `)
+    .select('id, nome, loja, url, imagem_url, preco, created_at, reservas(id, usuario_id)')
     .order('created_at', { ascending: true })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const presentes = data.map((p) => {
-    const reserva = p.reservas ?? null
-    return {
-      id: p.id,
-      nome: p.nome,
-      loja: p.loja,
-      url: p.url,
-      imagem_url: p.imagem_url,
-      preco: p.preco,
-      created_at: p.created_at,
-      reservado: !!reserva,
-      reserva: reserva
-        ? {
-            id: reserva.id,
-            reservado_por: reserva.usuarios,
-          }
-        : null,
-    }
-  })
+  const presentes = data.map((p) => ({
+    id: p.id,
+    nome: p.nome,
+    loja: p.loja,
+    url: p.url,
+    imagem_url: p.imagem_url,
+    preco: p.preco,
+    created_at: p.created_at,
+    reservado: !!p.reservas,
+  }))
 
-  return NextResponse.json({ presentes })
+  const res = NextResponse.json({ presentes })
+  res.headers.set('Cache-Control', 'no-store')
+  return res
 }
 
-// POST — adiciona novo presente (admin)
+// POST — insere novo presente
 export async function POST(req: NextRequest) {
   try {
     const { nome, loja, url, imagem_url, preco } = await req.json()
@@ -69,7 +55,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PUT — edita presente existente (admin)
+// PUT — edita presente existente (recebe id + campos)
 export async function PUT(req: NextRequest) {
   try {
     const { id, nome, loja, url, imagem_url, preco } = await req.json()
@@ -95,7 +81,7 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-// DELETE — remove presente (admin)
+// DELETE — remove presente (recebe id)
 export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json()

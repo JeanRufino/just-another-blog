@@ -12,3 +12,35 @@ html,
 body {
   height: 100%;
 }
+
+@keyframes fade-a {
+  0%, 35%  { opacity: 1; }
+  45%, 85% { opacity: 0; }
+  95%, 100%{ opacity: 1; }
+}
+@keyframes fade-b {
+  0%, 35%  { opacity: 0; }
+  45%, 85% { opacity: 1; }
+  95%, 100%{ opacity: 0; }
+}
+
+.photo-a { animation: fade-a 6s ease-in-out infinite; }
+.photo-b { animation: fade-b 6s ease-in-out infinite; }
+
+@keyframes pulse-bg {
+  0%, 100% { background-color: #1f2937; }
+  50%       { background-color: #4b5563; }
+}
+
+.page-active {
+  animation: pulse-bg 6s ease-in-out infinite;
+  color: white;
+  border-color: transparent;
+}
+
+.paper {
+  background-color: #fef7f8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 250px 250px;
+  background-blend-mode: multiply;
+}

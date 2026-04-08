@@ -1,0 +1,71 @@
+<svg width="120" height="120" viewBox="-10 -10 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- camada 1 — externa, expande pouco, reage primeiro -->
+  <g transform="translate(50,42)">
+    <animateTransform attributeName="transform" type="scale" additive="sum"
+      values="1;1.03;1;1.03;1;1"
+      keyTimes="0;0.07;0.16;0.24;0.34;1"
+      calcMode="spline"
+      keySplines="0.3 0 0.4 1;0.4 0 0.3 1;0.3 0 0.4 1;0.4 0 0.3 1;0 0 1 1"
+      dur="2.4s" begin="0s" repeatCount="indefinite"/>
+    <path d="M50,85 C10,60 0,35 0,25 C0,10 10,0 25,0 C34,0 42,5 50,13 C58,5 66,0 75,0 C90,0 100,10 100,25 C100,35 90,60 50,85 Z"
+      transform="scale(1.00) translate(-50,-42)">
+      <animate attributeName="fill"
+        values="#4a0000;#9a1a08;#4a0000;#9a1a08;#4a0000;#4a0000"
+        keyTimes="0;0.07;0.16;0.24;0.34;1"
+        dur="2.4s" begin="0s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- camada 2 — expande um toque a mais, leve delay -->
+  <g transform="translate(50,42)">
+    <animateTransform attributeName="transform" type="scale" additive="sum"
+      values="1;1.05;1;1.05;1;1"
+      keyTimes="0;0.07;0.16;0.24;0.34;1"
+      calcMode="spline"
+      keySplines="0.3 0 0.4 1;0.4 0 0.3 1;0.3 0 0.4 1;0.4 0 0.3 1;0 0 1 1"
+      dur="2.4s" begin="0.07s" repeatCount="indefinite"/>
+    <path d="M50,85 C10,60 0,35 0,25 C0,10 10,0 25,0 C34,0 42,5 50,13 C58,5 66,0 75,0 C90,0 100,10 100,25 C100,35 90,60 50,85 Z"
+      transform="scale(0.80) translate(-50,-42)">
+      <animate attributeName="fill"
+        values="#7a1010;#c84018;#7a1010;#c84018;#7a1010;#7a1010"
+        keyTimes="0;0.07;0.16;0.24;0.34;1"
+        dur="2.4s" begin="0.07s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- camada 3 — expande mais, delay maior -->
+  <g transform="translate(50,42)">
+    <animateTransform attributeName="transform" type="scale" additive="sum"
+      values="1;1.08;1;1.08;1;1"
+      keyTimes="0;0.07;0.16;0.24;0.34;1"
+      calcMode="spline"
+      keySplines="0.3 0 0.4 1;0.4 0 0.3 1;0.3 0 0.4 1;0.4 0 0.3 1;0 0 1 1"
+      dur="2.4s" begin="0.14s" repeatCount="indefinite"/>
+    <path d="M50,85 C10,60 0,35 0,25 C0,10 10,0 25,0 C34,0 42,5 50,13 C58,5 66,0 75,0 C90,0 100,10 100,25 C100,35 90,60 50,85 Z"
+      transform="scale(0.60) translate(-50,-42)">
+      <animate attributeName="fill"
+        values="#b02020;#e05828;#b02020;#e05828;#b02020;#b02020"
+        keyTimes="0;0.07;0.16;0.24;0.34;1"
+        dur="2.4s" begin="0.14s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- camada 4 — núcleo, expande mais de todos, reage por último -->
+  <g transform="translate(50,42)">
+    <animateTransform attributeName="transform" type="scale" additive="sum"
+      values="1;1.12;1;1.12;1;1"
+      keyTimes="0;0.07;0.16;0.24;0.34;1"
+      calcMode="spline"
+      keySplines="0.3 0 0.4 1;0.4 0 0.3 1;0.3 0 0.4 1;0.4 0 0.3 1;0 0 1 1"
+      dur="2.4s" begin="0.21s" repeatCount="indefinite"/>
+    <path d="M50,85 C10,60 0,35 0,25 C0,10 10,0 25,0 C34,0 42,5 50,13 C58,5 66,0 75,0 C90,0 100,10 100,25 C100,35 90,60 50,85 Z"
+      transform="scale(0.38) translate(-50,-42)">
+      <animate attributeName="fill"
+        values="#e05060;#ff9060;#e05060;#ff9060;#e05060;#e05060"
+        keyTimes="0;0.07;0.16;0.24;0.34;1"
+        dur="2.4s" begin="0.21s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+</svg>

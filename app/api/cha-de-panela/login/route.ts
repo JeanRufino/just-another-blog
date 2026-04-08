@@ -5,13 +5,29 @@ export async function POST(req: NextRequest) {
   try {
     const { nome, email } = await req.json()
 
-    if (!nome || !email) {
-      return NextResponse.json({ error: 'Nome e email são obrigatórios' }, { status: 400 })
+    if (!email) {
+      return NextResponse.json({ error: 'Email é obrigatório' }, { status: 400 })
+    }
+
+    // Tenta buscar usuário existente pelo email
+    const { data: existente } = await supabase
+      .from('usuarios')
+      .select()
+      .eq('email', email)
+      .maybeSingle()
+
+    if (existente) {
+      return NextResponse.json({ usuario: existente })
+    }
+
+    // Usuário novo — precisa do nome
+    if (!nome) {
+      return NextResponse.json({ novo: true }, { status: 200 })
     }
 
     const { data, error } = await supabase
       .from('usuarios')
-      .upsert({ nome, email }, { onConflict: 'email' })
+      .insert({ nome, email })
       .select()
       .single()
 

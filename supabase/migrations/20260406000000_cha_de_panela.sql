@@ -37,3 +37,14 @@ create table mensagens (
   mensagem text not null,
   created_at timestamp default now()
 );
+
+-- RLS policies (acesso público — app sem auth real)
+alter table usuarios  enable row level security;
+alter table presentes enable row level security;
+alter table reservas  enable row level security;
+alter table mensagens enable row level security;
+
+create policy "public_all" on usuarios  for all using (true) with check (true);
+create policy "public_all" on presentes for all using (true) with check (true);
+create policy "public_all" on reservas  for all using (true) with check (true);
+create policy "public_all" on mensagens for all using (true) with check (true);

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const url = searchParams.get('url')
+  const id = searchParams.get('id')
 
   if (!url) {
     return NextResponse.json({ success: false, error: 'URL é obrigatória' }, { status: 400 })
@@ -47,6 +49,14 @@ export async function GET(req: NextRequest) {
 
     if (!title && !image) {
       return NextResponse.json({ success: false })
+    }
+
+    // Salva imagem no banco para não buscar novamente
+    if (id && image) {
+      await supabase
+        .from('presentes')
+        .update({ imagem_url: image })
+        .eq('id', id)
     }
 
     return NextResponse.json({ success: true, title, image, price })

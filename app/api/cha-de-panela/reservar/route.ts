@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+export async function DELETE(req: NextRequest) {
+  try {
+    const { presente_id } = await req.json()
+
+    if (!presente_id) {
+      return NextResponse.json({ error: 'presente_id é obrigatório' }, { status: 400 })
+    }
+
+    const { error } = await supabase
+      .from('reservas')
+      .delete()
+      .eq('presente_id', presente_id)
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { presente_id, usuario_id } = await req.json()

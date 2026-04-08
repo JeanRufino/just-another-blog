@@ -1,0 +1,45 @@
+<svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="h" d="M50,85 C10,60 0,35 0,25 C0,10 10,0 25,0 C34,0 42,5 50,13 C58,5 66,0 75,0 C90,0 100,10 100,25 C100,35 90,60 50,85 Z"/>
+  </defs>
+
+  <use href="#h" fill="#8b0000" transform="translate(38,28) rotate(-8,50,42) scale(0.23) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="3.2s" begin="0s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#c0272d" transform="translate(100,12) rotate(6,50,42) scale(0.17) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="4.1s" begin="0.7s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#e0373e" transform="translate(162,32) rotate(-13,50,42) scale(0.30) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="3.7s" begin="1.4s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#ff6b78" transform="translate(238,18) rotate(9,50,42) scale(0.21) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="5.0s" begin="0.3s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#b01a20" transform="translate(18,105) rotate(4,50,42) scale(0.27) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="4.4s" begin="2.1s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#d93040" transform="translate(82,88) rotate(-7,50,42) scale(0.34) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="3.5s" begin="1.0s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#ff4455" transform="translate(152,108) rotate(12,50,42) scale(0.19) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="4.8s" begin="1.8s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#7a0a0a" transform="translate(222,92) rotate(-10,50,42) scale(0.31) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="3.9s" begin="0.5s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#e05565" transform="translate(52,162) rotate(7,50,42) scale(0.25) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="4.3s" begin="2.6s" repeatCount="indefinite"/>
+  </use>
+
+  <use href="#h" fill="#c43040" transform="translate(135,155) rotate(-5,50,42) scale(0.29) translate(-50,-42)">
+    <animate attributeName="opacity" values="1;0.1;1" dur="3.6s" begin="1.2s" repeatCount="indefinite"/>
+  </use>
+</svg>
