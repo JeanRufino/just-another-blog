@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bingo Chá de Panela</title>
+
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+    }
+
+    .card {
+      height: 48%;
+      border: 2px solid #000;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      flex: 1;
+      gap: 4px;
+    }
+
+    .cell {
+      border: 1px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      padding: 4px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    .page-break {
+      page-break-after: always;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="container"></div>
+
+<script>
+const TOTAL_PAGES = 5; // 👈 ALTERE AQUI
+
+const words = [ 
+  "Coador", "Forma", "Zester", "Pia", "Liquidificador", "Colher De Pau", "Assar", 
+  "Taça", "Prato", "Micro-ondas", "Escorredor", "Cafeteira", "Copo", "Ferro", 
+  "Xícara", "Tábua", "Frigideira", "Jarra", "Peneira", "Pilão", "Rolo",
+  "Espátula", "Faca", "Pote", "Farinha De Trigo", "Farinha", "Fermento",
+  "Ralador", "Açúcar", "Manteiga", "Escumadeira", "Fritura", "Marinada",
+  "Selar", "Processar", "Incorporar", "Saltear", "Fervura", "Pochar",
+  "Termômetro", "Termômetro Culinário", "Pegador De Sorvete",
+  "Pegador De Massa", "Colher", "Colher De Silicone",
+  "Copo Medidor", "Garrafa Térmica", "Processador",
+  "Mixer", "Bia", "Jean"
+];
+
+// shuffle real (melhor que sort)
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function getCardWords() {
+  return shuffle([...words]).slice(0, 24);
+}
+
+function createCard() {
+  const selected = getCardWords();
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const title = document.createElement("div");
+  title.className = "title";
+  title.innerText = "CHÁ DE PANELA";
+  card.appendChild(title);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  let index = 0;
+
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+
+    if (i === 12) {
+      cell.innerText = "BINGO";
+      cell.style.fontWeight = "bold";
+    } else {
+      cell.innerText = selected[index++];
+    }
+
+    grid.appendChild(cell);
+  }
+
+  card.appendChild(grid);
+
+  const footer = document.createElement("div");
+  footer.className = "footer";
+  footer.innerText = "Bia & Jean";
+  card.appendChild(footer);
+
+  return card;
+}
+
+function generate() {
+  const container = document.getElementById("container");
+
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    const page = document.createElement("div");
+    page.className = "page";
+
+    page.appendChild(createCard());
+    page.appendChild(createCard());
+
+    if (i < TOTAL_PAGES - 1) {
+      page.classList.add("page-break");
+    }
+
+    container.appendChild(page);
+  }
+}
+
+generate();
+</script>
+
+</body>
+</html>
