@@ -28,6 +28,40 @@ type Presente = {
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL
 
+const JEAN_PHOTOS = [
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean_cerveja.JPEG',
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/alfredo_jean.webp',
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean.JPG',
+]
+const BIA_PHOTOS = [
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia.jpeg',
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/colette_bia.webp',
+  'https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia_joselito.JPEG',
+]
+
+// Posições do fan: 0 = atrás-esquerda, 1 = atrás-direita, 2 = frente
+const FAN = [
+  { transform: 'rotate(-15deg) translate(-24px, 4px)', zIndex: 1 },
+  { transform: 'rotate(13deg) translate(20px, 6px)',   zIndex: 2 },
+  { transform: 'rotate(0deg)  translate(0, 0)',        zIndex: 3 },
+]
+
+const FAN_MOBILE = [
+  { transform: 'rotate(-10deg) translate(-12px, 3px)', zIndex: 1 },
+  { transform: 'rotate(8deg)  translate(10px, 3px)',   zIndex: 2 },
+  { transform: 'rotate(0deg)  translate(0, 0)',        zIndex: 3 },
+]
+
+function fanStyle(photoIndex: number, activeIndex: number) {
+  const pos = (photoIndex - activeIndex + 3) % 3
+  return { ...FAN[pos], transition: 'transform 0.65s ease' }
+}
+
+function fanStyleMobile(photoIndex: number, activeIndex: number) {
+  const pos = (photoIndex - activeIndex + 3) % 3
+  return { ...FAN_MOBILE[pos], transition: 'transform 0.65s ease' }
+}
+
 export default function ChaDePanela() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [presentes, setPresentes] = useState<Presente[]>([])
@@ -79,6 +113,7 @@ export default function ChaDePanela() {
   const [msgLoading, setMsgLoading] = useState(false)
   const [msgFeedback, setMsgFeedback] = useState('')
   const [pixCopiado, setPixCopiado] = useState(false)
+  const [photoIdx, setPhotoIdx] = useState(0)
 
   // Carrega usuário do localStorage
   useEffect(() => {
@@ -95,6 +130,12 @@ export default function ChaDePanela() {
     const controller = new AbortController()
     fetchPresentes(controller.signal)
     return () => controller.abort()
+  }, [])
+
+  // Cicla fotos no desktop
+  useEffect(() => {
+    const id = setInterval(() => setPhotoIdx((i) => (i + 1) % 3), 3500)
+    return () => clearInterval(id)
   }, [])
 
   async function fetchPresentes(signal?: AbortSignal) {
@@ -441,11 +482,17 @@ export default function ChaDePanela() {
             {/* Fotos + coração — mobile/tablet */}
             <div className="flex lg:hidden items-center justify-center mb-4 gap-3 min-[526px]:gap-6">
               {/* Fotos Jean */}
-              <div className="relative shrink-0 rotate-[-6deg] z-10 w-[88px] h-[118px] min-[526px]:w-[116px] min-[526px]:h-[154px]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/alfredo_jean.webp" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean.JPG" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+              <div className="relative shrink-0 rotate-[-6deg] z-10 w-[79px] h-[106px] min-[526px]:w-[104px] min-[526px]:h-[139px]">
+                {JEAN_PHOTOS.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-md"
+                    style={fanStyleMobile(i, photoIdx)}
+                  />
+                ))}
               </div>
               {/* Coração — escalado via wrapper */}
               <div className="relative flex items-center justify-center shrink-0 scale-[0.65] min-[526px]:scale-[0.82] origin-center">
@@ -459,40 +506,63 @@ export default function ChaDePanela() {
                 <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'scaleX(-1) rotate(-60deg)', marginLeft: '-44px', marginTop: '80px' }} />
               </div>
               {/* Fotos Bia */}
-              <div className="relative shrink-0 rotate-[6deg] z-10 w-[88px] h-[118px] min-[526px]:w-[116px] min-[526px]:h-[154px]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia.jpeg" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/colette_bia.webp" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+              <div className="relative shrink-0 rotate-[6deg] z-10 w-[79px] h-[106px] min-[526px]:w-[104px] min-[526px]:h-[139px]">
+                {BIA_PHOTOS.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-md"
+                    style={fanStyleMobile(i, photoIdx)}
+                  />
+                ))}
               </div>
             </div>
 
-            {/* Fotos + coração — desktop (layout original) */}
-            <div className="hidden lg:flex relative items-center justify-center mb-4">
-              <div className="absolute left-2 -top-10 z-10 rotate-[-6deg]" style={{ width: 144, height: 192 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/alfredo_jean.webp" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/jean.JPG" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+            {/* Fotos + coração — desktop */}
+            <div className="hidden lg:flex items-center justify-center mb-4 gap-20">
+              {/* Jean — mão de cartas */}
+              <div className="relative shrink-0 rotate-[-6deg] z-10" style={{ width: 122, height: 163 }}>
+                {JEAN_PHOTOS.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-md"
+                    style={fanStyle(i, photoIdx)}
+                  />
+                ))}
               </div>
-              <div className="absolute right-2 -top-10 z-10 rotate-[6deg]" style={{ width: 144, height: 192 }}>
+              {/* Coração */}
+              <div className="relative flex items-center justify-center shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/bia.jpeg" alt="" className="photo-a absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+                <img src="/hearts-cloud.svg" alt="" width={280} height={200} className="absolute pointer-events-none" style={{ zIndex: 5 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://ygqwnveaaimzipotjvkq.supabase.co/storage/v1/object/public/cha-de-panela/colette_bia.webp" alt="" className="photo-b absolute inset-0 w-full h-full object-cover rounded-lg shadow-md" />
+                <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'rotate(-60deg)', marginRight: '-44px', marginTop: '80px', zIndex: 5 }} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/heart.svg" alt="" width={128} height={128} className="relative" style={{ zIndex: 5 }} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'scaleX(-1) rotate(-60deg)', marginLeft: '-44px', marginTop: '80px', zIndex: 5 }} />
               </div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/hearts-cloud.svg" alt="" width={280} height={200} className="absolute pointer-events-none" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'rotate(-60deg)', marginRight: '-44px', marginTop: '80px' }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/heart.svg" alt="" width={128} height={128} className="relative" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/heart-deco.svg" alt="" width={70} height={100} style={{ transform: 'scaleX(-1) rotate(-60deg)', marginLeft: '-44px', marginTop: '80px' }} />
+              {/* Bia — mão de cartas */}
+              <div className="relative shrink-0 rotate-[6deg] z-10" style={{ width: 122, height: 163 }}>
+                {BIA_PHOTOS.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-md"
+                    style={fanStyle(i, photoIdx)}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Banner full width — escapa do padding do main */}
-            <div className="flex flex-col text-center" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }}>
+            <div className="flex flex-col text-center mt-10" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }}>
               <div className="w-full py-1" style={{ background: '#ca9f9f' }} />
               <div className="w-full py-1" style={{ background: '#dfacb3' }} />
               <div className="w-full py-5 flex flex-col items-center justify-center gap-1" style={{ background: '#f9ccd3' }}>
@@ -791,6 +861,13 @@ export default function ChaDePanela() {
             >
               Ver produto →
             </a>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-gray-700 space-y-1">
+              <p className="font-semibold text-amber-800">Se for enviar o presente, use esse endereço:</p>
+              <p>CEP 21331-690 — Rua Embiri, 131A (ou 131, casa A)</p>
+              <p>Bento Ribeiro, Rio de Janeiro, RJ</p>
+              <p className="font-medium">Jean Rufino</p>
+            </div>
 
             {modalMsg && (
               <p className={`text-sm ${modalMsg.includes('sucesso') || modalMsg.includes('cancelada') ? 'text-green-600' : 'text-red-500'}`}>
