@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function AdminLogin() {
-  const router = useRouter()
   const [password, setPassword] = useState('')
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,7 +25,7 @@ export default function AdminLogin() {
       if (!res.ok) {
         setErro(json.error ?? 'Erro ao autenticar')
       } else {
-        router.replace('/cha-de-panela/admin')
+        window.location.replace('/cha-de-panela/admin')
       }
     } catch {
       setErro('Erro de rede')
