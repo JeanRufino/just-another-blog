@@ -12,6 +12,7 @@ type Presente = {
   imagem_url: string | null
   preco: string | null
   reservado: boolean
+  reservado_por: { nome: string; email: string } | null
 }
 
 type Form = {
@@ -339,7 +340,9 @@ export default function AdminChaDePanela() {
                             </a>
                           </p>
                           {p.reservado && (
-                            <p className="text-xs text-orange-500 mt-1">Reservado</p>
+                            <p className="text-xs text-orange-500 mt-1">
+                              Reservado{p.reservado_por ? ` por ${p.reservado_por.nome}` : ''}
+                            </p>
                           )}
                         </div>
                         <div className="flex gap-2 shrink-0">

@@ -7,24 +7,32 @@ import { supabase } from '@/lib/supabase'
 export async function GET() {
   const { data, error } = await supabase
     .from('presentes')
-    .select('id, nome, descricao, loja, url, imagem_url, preco, created_at, reservas(id, usuario_id)')
+    .select('id, nome, descricao, loja, url, imagem_url, preco, created_at, reservas(id, usuario_id, usuarios(nome, email))')
     .order('created_at', { ascending: true })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const presentes = data.map((p) => ({
-    id: p.id,
-    nome: p.nome,
-    descricao: p.descricao,
-    loja: p.loja,
-    url: p.url,
-    imagem_url: p.imagem_url,
-    preco: p.preco,
-    created_at: p.created_at,
-    reservado: !!p.reservas,
-  }))
+  const presentes = data.map((p) => {
+    const reserva = Array.isArray(p.reservas) ? p.reservas[0] : p.reservas
+    const rawUsuario = reserva && typeof reserva === 'object' && 'usuarios' in reserva
+      ? (reserva as unknown as { usuarios: { nome: string; email: string } | { nome: string; email: string }[] | null }).usuarios
+      : null
+    const usuario = Array.isArray(rawUsuario) ? rawUsuario[0] ?? null : rawUsuario
+    return {
+      id: p.id,
+      nome: p.nome,
+      descricao: p.descricao,
+      loja: p.loja,
+      url: p.url,
+      imagem_url: p.imagem_url,
+      preco: p.preco,
+      created_at: p.created_at,
+      reservado: !!reserva,
+      reservado_por: usuario ?? null,
+    }
+  })
 
   const res = NextResponse.json({ presentes })
   res.headers.set('Cache-Control', 'no-store')
