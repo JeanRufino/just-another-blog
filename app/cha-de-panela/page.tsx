@@ -819,7 +819,7 @@ export default function ChaDePanela() {
             if (e.target === e.currentTarget) setModalPresenteId(null)
           }}
         >
-          <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
             <div className="flex justify-between items-start pb-4">
               <h3 className="font-semibold text-lg">{modalPresente.nome}</h3>
               <button
